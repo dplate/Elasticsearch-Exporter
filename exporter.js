@@ -62,7 +62,12 @@ exports.getMemoryStats = function() {
  * @param {function} callback Function to be called as soon as memory is available again.
  */
 exports.waitOnTargetDriver = function(callback) {
-    if (global.gc && exports.getMemoryStats() > exports.opts.memoryLimit) {
+    if (exports.targetDriver.runningStore) {
+        setTimeout(function() {
+            exports.waitOnTargetDriver(callback);
+        }, 10);
+    }
+    else if (global.gc && exports.getMemoryStats() > exports.opts.memoryLimit) {
         global.gc();
         setTimeout(function() {
             exports.waitOnTargetDriver(callback);

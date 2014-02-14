@@ -323,6 +323,7 @@ exports.storeData = function(opts, data, callback, retries) {
         retries++;
     }
 
+    exports.runningStore = true;
     var putReq = http.request({
 		host : opts.targetHost,
 		port : opts.targetPort,
@@ -331,6 +332,7 @@ exports.storeData = function(opts, data, callback, retries) {
 	}, function(res) {
 		//Data must be fetched, otherwise socket won't be set to free
 		res.on('data', function () {});
+                exports.runningStore = false;
 		callback();
 	});
     putReq.on('error', function (err) {
